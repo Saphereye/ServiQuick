@@ -1,10 +1,11 @@
 import requests
 from enum import Enum
 
+# todo use environment variables
 API_KEY = 'iWrpAat8eDeNt2CqqWtw6bQPweqd2xqCNk7wh9gR_p8'
 
 # ipinfo.io
-def get_lat_long() -> tuple[str, str]:
+def get_lat_long() -> str:
     api_url = "https://ipinfo.io"
 
     try:
@@ -15,6 +16,7 @@ def get_lat_long() -> tuple[str, str]:
         if response.status_code == 200:
             # Parse the JSON response if the API returns JSON data
             data = response.json()
+            print("Current latlong: " + data['loc'])
             return data['loc']
         else:
             print(f"Failed to retrieve data. Status code: {response.status_code}")
@@ -27,7 +29,7 @@ class Service(Enum):
     FIRE_STATION = 'firestation'
 
 # https://discover.search.hereapi.com/v1/discover?at=52.8173086,12.2368342&limit=2&lang=en&q=hospital+hyderbad&apiKey=iWrpAat8eDeNt2CqqWtw6bQPweqd2xqCNk7wh9gR_p8
-def get_nearest_service(service: Service) -> dict[str, str]:
+def get_nearest_service(service: Service) -> str:
     loc = get_lat_long()
 
     api_url = f"https://discover.search.hereapi.com/v1/discover?at={loc}&limit=2&lang=en&q={service.value}&apiKey={API_KEY}"
@@ -41,9 +43,10 @@ def get_nearest_service(service: Service) -> dict[str, str]:
         if response.status_code == 200:
             # Parse the JSON response if the API returns JSON data
             data = response.json()
-            # print(data['items'])
+            print(data['items'][0]['title'])
+            print(data['items'][0]['position']['lat'], data['items'][0]['position']['lng'])
 
-            return data['items'][0]['title']
+            return f"{data['items'][0]['position']['lat']},{data['items'][0]['position']['lng']}"
         else:
             print(f"Failed to retrieve data. Status code: {response.status_code}")
 

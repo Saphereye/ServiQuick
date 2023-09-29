@@ -27,20 +27,20 @@ class MapWithRoute(BoxLayout):
     def get_route_data(self):
         # Make a request to HERE API to retrieve route data
         # Replace with your HERE API request logic and URL
-        waypoint0 = '51.5074,-0.1278'  # London coordinates as the starting point
-        waypoint1 = wrapper.get_lat_long()  # Destination coordinates
-        mode = 'fastest;car;traffic:disabled'
+        waypoint0 = wrapper.get_lat_long()
+        waypoint1 = wrapper.get_nearest_service(wrapper.Service.HOSPITAL)
+        mode = 'car'
         app_id = 'OnyJ5cxLBpW9KOhx3wCW'
         app_code = 'iWrpAat8eDeNt2CqqWtw6bQPweqd2xqCNk7wh9gR_p8'
     
-        api_url = f'https://router.hereapi.com/v8/routes?transportMode=car&origin={waypoint0}&destination={waypoint1}&return=summary&apikey={app_code}'
+        api_url = f'https://router.hereapi.com/v8/routes?transportMode={mode}&origin={waypoint0}&destination={waypoint1}&return=summary&apikey={app_code}'
         print(f"{api_url=}")
 
         response = requests.get(api_url)
         print(f"{response.json()=}")
 
         if response.status_code == 200:
-            output = []
+            output = [(float(waypoint0.split(',')[0]), float(waypoint0.split(',')[1]))]
             for i in range(len(response.json()['routes'][0]['sections'])):
                 output.append((
                     response.json()['routes'][0]['sections'][i]['arrival']['place']['location']['lat'],
@@ -61,8 +61,12 @@ class MapWithRoute(BoxLayout):
         # polyline.add_polyline(route_coordinates)
         # self.mapview.add_marker(polyline)
         layer = ClusteredMarkerLayer()
+
+        (lat, lon) = (float(i) for i in wrapper.get_lat_long().split(','))
+        layer.add_marker(lon, lat, cls=MapMarker)
+
         # print(help(layer.add_marker))
-        for lat, lon in route_coordinates:
+        for lon, lat in route_coordinates:
             layer.add_marker(lon=lon, lat=lat, cls=MapMarker)
         self.mapview.add_widget(layer)
 
