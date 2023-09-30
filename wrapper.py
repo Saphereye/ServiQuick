@@ -1,12 +1,16 @@
 import requests
 from enum import Enum
 import polyline
+import pyperclip
+import pyttsx3
+import os
 
-# todo use environment variables
+engine = pyttsx3.init()
+engine.setProperty('voice', 'english+f4')
+
 API_KEY = 'iWrpAat8eDeNt2CqqWtw6bQPweqd2xqCNk7wh9gR_p8'
 ORS_API_KEY = '5b3ce3597851110001cf6248056ade7a5d63493cb05b0d6692675228'
 
-# ipinfo.io
 def get_lat_long() -> str:
     api_url = "https://ipinfo.io"
 
@@ -21,10 +25,12 @@ def get_lat_long() -> str:
             print("Current latlong: " + data['loc'])
             return data['loc']
         else:
-            print(f"Failed to retrieve data. Status code: {response.status_code}")
+            print(
+                f"Failed to retrieve data. Status code: {response.status_code}")
 
     except requests.exceptions.RequestException as e:
         print(f"Request error: {e}")
+
 
 class Service(Enum):
     HOSPITAL = 'hospital'
@@ -32,7 +38,30 @@ class Service(Enum):
     POLICE = 'police'
 
 # https://discover.search.hereapi.com/v1/discover?at=52.8173086,12.2368342&limit=2&lang=en&q=hospital+hyderbad&apiKey=iWrpAat8eDeNt2CqqWtw6bQPweqd2xqCNk7wh9gR_p8
+
+
 def get_nearest_service(loc: str, service: Service) -> str:
+    # import tkinter as tk
+    # from tkinter import simpledialog
+
+    # def show_dialog():
+    #     result = simpledialog.askstring("Input", "Enter something:")
+    #     if result:
+    #         print(f"You entered: {result}")
+    #     else:
+    #         print("You canceled the dialog.")
+
+    # root = tk.Tk()
+    # root.geometry("300x100")
+    # root.title("Tkinter Dialog Example")
+
+    # button = tk.Button(root, text="Show Dialog", command=show_dialog)
+    # button.pack(pady=20)
+
+    # root.mainloop()
+
+    engine.say(f"Looking for {service.value} near me")
+    engine.runAndWait()
     api_url = f"https://discover.search.hereapi.com/v1/discover?at={loc}&limit=2&lang=en&q={service.value}&apiKey={API_KEY}"
     # print(api_url)
 
@@ -44,12 +73,34 @@ def get_nearest_service(loc: str, service: Service) -> str:
         if response.status_code == 200:
             # Parse the JSON response if the API returns JSON data
             data = response.json()
-            print(data['items'][0]['title'])
-            print(data['items'][0]['position']['lat'], data['items'][0]['position']['lng'])
+            engine.say(
+                f"Found closest {service.value}, {data['items'][0]['title']}")
+            # engine.runAndWait()
+
+            print(data['items'][0]['position']['lat'],
+                  data['items'][0]['position']['lng'])
+
+            # if 'contacts' in data['items'][0]:
+            #     engine.say(f"You can call the number {' '.join(data['items'][0]['contacts'][0]['phone'][0]['value'].split())}")
+            #     engine.runAndWait()
+            #     # print("Relevant phone number: ", data['items'][0]['contacts'][0]['phone'][0]['value'])
+            # else:
+            #     print('Phone number not present')
+
+            # print(data['items'][0]['distance'])
+
+            total_time = int(data['items'][0]['distance'])/25
+            # minutes
+            print(f"{total_time=}")
+
+            # engine.say(f"estimated time to reach is {int(total_time)} hours and {int((total_time - int(total_time))*60)} minutes")
+            engine.say(f"estimated time to reach is {f'{int(total_time)//60} hours and ' if int(total_time)//60 != 0 else ''} {f'{int((total_time - int(total_time/60)*60))}'} minutes. Showing the fastest route")
+            engine.runAndWait()
 
             return f"{data['items'][0]['position']['lat']},{data['items'][0]['position']['lng']}"
         else:
-            print(f"Failed to retrieve data. Status code: {response.status_code}")
+            print(
+                f"Failed to retrieve data. Status code: {response.status_code}")
 
     except requests.exceptions.RequestException as e:
         print(f"Request error: {e}")
@@ -77,6 +128,7 @@ def get_nearest_service(loc: str, service: Service) -> str:
 #             print(f"Latitude: {lat}, Longitude: {lon}")
 #     else:
 #         print('Failed to retrieve route data.')
+
 
 def get_route(latlong: str, service: Service) -> list[list[float]]:
     start_coords = latlong.split(',')
@@ -113,15 +165,17 @@ def get_route(latlong: str, service: Service) -> list[list[float]]:
                 print('No route data found in the response.')
                 return None
         else:
-            print(f'Failed to retrieve route data. Status code: {response.status_code}')
+            print(
+                f'Failed to retrieve route data. Status code: {response.status_code}')
             return None
 
     except requests.exceptions.RequestException as e:
         print(f'Request error: {e}')
         return None
 
+
 if __name__ == "__main__":
     print(get_lat_long())
     # print(get_nearest_service(Service.HOSPITAL))
     # print(get_nearest_service(Service.FIRE_STATION))
-    print(get_route(get_lat_long(), Service.HOSPITAL))
+    print(get_route(get_lat_long(), Service.POLICE))
