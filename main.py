@@ -12,19 +12,12 @@ from kivy.uix.label import Label
 import requests
 import wrapper
 from enum import Enum
-import pyttsx3
 
-engine = pyttsx3.init()
-engine.setProperty('voice', 'english+f3') 
-
-def speak(text: str):
-    engine.say(f"Showing the fastest route")
-    engine.runAndWait()
+from helper import *
 
 class DisplayOption(Enum):
     ClosestService = 1
     PathToService = 2
-
 
 class MapWithRoute(FloatLayout):
     def __init__(self, **kwargs):
@@ -110,8 +103,9 @@ class MapWithRoute(FloatLayout):
         pass
 
     def draw_route(self, route_coordinates, display_option: DisplayOption):
-        engine.say(f"Showing the fastest route")
+        # engine.say(f"Showing the fastest route")
         # engine.runAndWait()
+        speak(f"Showing the fastest route")
         match display_option:
             case DisplayOption.PathToService:
                 if self.layer:
@@ -145,5 +139,4 @@ class MapApp(App):
 
 
 if __name__ == '__main__':
-    engine.runAndWait()
     MapApp().run()

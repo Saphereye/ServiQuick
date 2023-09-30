@@ -4,12 +4,10 @@ import polyline
 import pyperclip
 import pyttsx3
 import os
+from helper import *
 
 engine = pyttsx3.init()
 engine.setProperty('voice', 'english+f4')
-
-API_KEY = 'iWrpAat8eDeNt2CqqWtw6bQPweqd2xqCNk7wh9gR_p8'
-ORS_API_KEY = '5b3ce3597851110001cf6248056ade7a5d63493cb05b0d6692675228'
 
 def get_lat_long() -> str:
     api_url = "https://ipinfo.io"
@@ -60,8 +58,9 @@ def get_nearest_service(loc: str, service: Service) -> str:
 
     # root.mainloop()
 
-    engine.say(f"Looking for {service.value} near me")
-    engine.runAndWait()
+    # engine.say(f"Looking for {service.value} near me")
+    # engine.runAndWait()
+    speak(f"Looking for {service.value} near me")
     api_url = f"https://discover.search.hereapi.com/v1/discover?at={loc}&limit=2&lang=en&q={service.value}&apiKey={API_KEY}"
     # print(api_url)
 
@@ -94,8 +93,9 @@ def get_nearest_service(loc: str, service: Service) -> str:
             print(f"{total_time=}")
 
             # engine.say(f"estimated time to reach is {int(total_time)} hours and {int((total_time - int(total_time))*60)} minutes")
-            engine.say(f"estimated time to reach is {f'{int(total_time)//60} hours and ' if int(total_time)//60 != 0 else ''} {f'{int((total_time - int(total_time/60)*60))}'} minutes. Showing the fastest route")
-            engine.runAndWait()
+            # engine.say(f"estimated time to reach is {f'{int(total_time)//60} hours and ' if int(total_time)//60 != 0 else ''} {f'{int((total_time - int(total_time/60)*60))}'} minutes. Showing the fastest route")
+            # engine.runAndWait()
+            speak(f"estimated time to reach is {f'{int(total_time)//60} hours and ' if int(total_time)//60 != 0 else ''} {f'{int((total_time - int(total_time/60)*60))}'} minutes. Showing the fastest route")
 
             return f"{data['items'][0]['position']['lat']},{data['items'][0]['position']['lng']}"
         else:
