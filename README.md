@@ -1,5 +1,5 @@
 # ServiQuick
-![image-removebg-preview](https://github.com/Saphereye/here-hackathon/assets/59739923/b9721782-ef82-48dd-8488-1abce053b3bc)
+![image](https://github.com/Saphereye/here-hackathon/assets/59739923/5e55c847-cd45-47a3-b576-147ec916ab3b)
 
 # Introduction
 
@@ -16,13 +16,13 @@ Features
 # Screenshots
 
 ## Hospital Service
-![image](https://github.com/Saphereye/here-hackathon/assets/59739923/3a501890-25dd-4456-b4da-b331606a7dc2)
+![Screenshot from 2023-09-30 22-39-43](https://github.com/Saphereye/here-hackathon/assets/59739923/4a2a00a8-71de-47db-aeed-65e1df9b63a9)
 
 ## Fire Station Service
-![image](https://github.com/Saphereye/here-hackathon/assets/59739923/1b1c60fa-88af-4d7b-827a-16fbb880cccd)
+![Screenshot from 2023-09-30 22-40-43](https://github.com/Saphereye/here-hackathon/assets/59739923/041aa5ea-095c-4f3c-8f6e-5bb3ba474099)
 
 ## Police Service
-![image](https://github.com/Saphereye/here-hackathon/assets/59739923/42eaceab-c504-4526-8e6a-f46c75aa7e5e)
+![Screenshot from 2023-09-30 22-41-32](https://github.com/Saphereye/here-hackathon/assets/59739923/eacc6abc-f3d7-47b0-a0b8-3192cfd2a6a9)
 
 # Development Details
 ServiQuik was developed using Kivy, a powerful Python app development framework known for its flexibility and ease of use. The choice of Kivy allowed us to create a cross-platform application with a sleek and responsive user interface.
