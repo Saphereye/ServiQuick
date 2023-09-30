@@ -9,6 +9,19 @@ from kivy.graphics import Line, Color
 import requests
 import wrapper
 
+# class RouteWidget(Widget):
+#     def __init__(self, **kwargs):
+#         super(RouteWidget, self).__init__(**kwargs)
+#         self.route_coordinates = []
+
+#     def set_route_coordinates(self, coordinates):
+#         self.route_coordinates = coordinates
+
+#     def draw_route(self):
+#         with self.canvas:
+#             Color(0, 1, 1, 1)
+#             Line(points=self.route_coordinates, width=4, joint_presicion=100)
+
 class MapWithRoute(BoxLayout):
     def __init__(self, **kwargs):
         super(MapWithRoute, self).__init__(**kwargs)
@@ -70,69 +83,51 @@ class MapWithRoute(BoxLayout):
         self.update_route()
 
     def update_route(self):
-        # Clear existing markers and routes
-        # for child in self.mapview.children[:]:
-        #     if isinstance(child, MapMarker):
-        #         self.mapview.remove_marker(child)
-        # print(self.mapview.children[:])
-
-
-        # # Request route information from HERE API based on the current service
-        # waypoint0 = self.latlong
-        # waypoint1 = wrapper.get_nearest_service(self.current_service)
-        # mode = 'car'
-        # app_id = 'OnyJ5cxLBpW9KOhx3wCW'
-        # app_code = 'iWrpAat8eDeNt2CqqWtw6bQPweqd2xqCNk7wh9gR_p8'
-
-        # api_url = f'https://router.hereapi.com/v8/routes?transportMode={mode}&origin={waypoint0}&destination={waypoint1}&return=summary&apikey={app_code}'
-        # print(f"{api_url=}")
-
-        # response = requests.get(api_url)
-        # print(f"{response.json()=}")
-
-        # if response.status_code == 200:
-        #     output = [(float(waypoint0.split(',')[0]), float(waypoint0.split(',')[1]))]
-        #     for i in range(len(response.json()['routes'][0]['sections'])):
-        #         output.append((
-        #             response.json()['routes'][0]['sections'][i]['arrival']['place']['location']['lat'],
-        #             response.json()['routes'][0]['sections'][i]['arrival']['place']['location']['lng']
-        #         ))
-        #     route_data = output
-        #     print(f"{route_data=}")
-        #     self.draw_route(route_data)
-        # else:
-        #     print('Failed to retrieve route data.')
-        self.draw_route(wrapper.get_route(self.current_service))
+        self.draw_route(wrapper.get_route(self.latlong, self.current_service))
 
     def draw_route(self, route_coordinates):
         # Create a new marker layer
-        # layer = ClusteredMarkerLayer()
+        layer = ClusteredMarkerLayer()
 
-        # print(route_coordinates)
+        print(route_coordinates)
 
-        # # Add markers for the route
-        # for location in route_coordinates:
-        #     layer.add_marker(lon=location[0], lat=location[1], cls=MapMarker)
+        # Add markers for the route
+        for location in route_coordinates:
+            layer.add_marker(lon=location[0], lat=location[1], cls=MapMarker)
 
-        # # Add the marker layer to the map
-        # self.mapview.add_widget(layer)
+        # Add the marker layer to the map
+        self.mapview.add_widget(layer)
 
+        # with self.canvas:
+        #     Color( 0, 1 , 1 , 1)
+        #     Line(points=route_coordinates , width=10 , joint_presicion = 100)
 
-        # Color( 0, 0 , 0 , .8)
-        # Line(points=route_coordinates , width=4 , joint_presicion = 100)
+        # # Clear existing route if any
+        # self.mapview.remove_widget(self.route_line)
 
-         # Create a Line object to draw the route
-        line = Line(points=[], width=4)
-        self.mapview.add_widget(line)
+        # Create a Line object to draw the route
+        # self.route_line = Line(points=[], width=4)
 
-        # Convert geographical coordinates to screen coordinates
-        screen_coordinates = []
-        for lat, lon in route_coordinates:
-            screen_x, screen_y = self.mapview.get_window_xy_from(lat, lon)
-            screen_coordinates.extend([screen_x, screen_y])
+        # # Convert geographical coordinates to screen coordinates and add to the Line
+        # for lat, lon in route_coordinates:
+        #     screen_x, screen_y = self.mapview.get_window_xy_from(lat, lon, self.mapview.zoom)
+        #     self.route_line.points.extend([screen_x, screen_y])
 
-        # Set the Line's points to draw the route
-        line.points = screen_coordinates
+        # # Add the Line to the map
+        # self.mapview.add_widget(self.route_line)
+
+        #  # Create a Line object to draw the route
+        # line = Line(points=[], width=4)
+        # self.mapview.add_widget(line)
+
+        # # Convert geographical coordinates to screen coordinates
+        # screen_coordinates = []
+        # for lat, lon in route_coordinates:
+        #     screen_x, screen_y = self.mapview.get_window_xy_from(lat, lon)
+        #     screen_coordinates.extend([screen_x, screen_y])
+
+        # # Set the Line's points to draw the route
+        # line.points = screen_coordinates
 
 
 

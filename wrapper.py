@@ -32,9 +32,7 @@ class Service(Enum):
     POLICE = 'police'
 
 # https://discover.search.hereapi.com/v1/discover?at=52.8173086,12.2368342&limit=2&lang=en&q=hospital+hyderbad&apiKey=iWrpAat8eDeNt2CqqWtw6bQPweqd2xqCNk7wh9gR_p8
-def get_nearest_service(service: Service) -> str:
-    loc = get_lat_long()
-
+def get_nearest_service(loc: str, service: Service) -> str:
     api_url = f"https://discover.search.hereapi.com/v1/discover?at={loc}&limit=2&lang=en&q={service.value}&apiKey={API_KEY}"
     # print(api_url)
 
@@ -80,9 +78,11 @@ def get_nearest_service(service: Service) -> str:
 #     else:
 #         print('Failed to retrieve route data.')
 
-def get_route(service: Service) -> list[list[float]]:
-    start_coords = get_lat_long().split(',')
-    end_coords = get_nearest_service(service).split(',')
+def get_route(latlong: str, service: Service) -> list[list[float]]:
+    start_coords = latlong.split(',')
+    end_coords = get_nearest_service(latlong, service).split(',')
+
+    print(f"Get route: {start_coords=}, {end_coords=}")
 
     # Define the API endpoint URL
     endpoint = 'https://api.openrouteservice.org/v2/directions/driving-car'
@@ -98,7 +98,7 @@ def get_route(service: Service) -> list[list[float]]:
         # Send a GET request to the API
         response = requests.get(endpoint, params=params)
 
-        print(f"{response=}")
+        # print(f"{response=}")
 
         # Check if the request was successful (status code 200)
         if response.status_code == 200:
@@ -124,4 +124,4 @@ if __name__ == "__main__":
     print(get_lat_long())
     # print(get_nearest_service(Service.HOSPITAL))
     # print(get_nearest_service(Service.FIRE_STATION))
-    print(get_route(Service.HOSPITAL))
+    print(get_route(get_lat_long(), Service.HOSPITAL))
